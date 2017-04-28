@@ -1,0 +1,8 @@
+.settings/*
+bin/*
+.classpath
+.project
+proc.sql
+Assign3.iml
+warehouse.png
+warehouse.ucls

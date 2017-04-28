@@ -1,0 +1,6 @@
+Nume: Roxana
+Adresa: Oradea
+Email: roxt@yahoo.com
+Produs: rochie
+Bucati: 2
+De plata: 190.0

@@ -1,0 +1,103 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema assig3
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema assig3
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `assig3` DEFAULT CHARACTER SET utf8 ;
+USE `assig3` ;
+
+-- -----------------------------------------------------
+-- Table `assig3`.`client`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `assig3`.`client` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `address` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE INDEX `ID_UNIQUE` (`ID` ASC))
+ENGINE = InnoDB
+AUTO_INCREMENT = 28
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `assig3`.`product`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `assig3`.`product` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `quantity` INT(11) NOT NULL,
+  `price` DOUBLE NOT NULL,
+  PRIMARY KEY (`ID`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 8
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `assig3`.`orderproduct`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `assig3`.`orderproduct` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `IDp` INT(11) NOT NULL,
+  `IDc` INT(11) NOT NULL,
+  `quantity` INT(11) NOT NULL,
+  PRIMARY KEY (`ID`, `IDc`, `IDp`),
+  INDEX `IDp_idx` (`IDp` ASC),
+  INDEX `IDc_idx` (`IDc` ASC),
+  CONSTRAINT `IDc`
+    FOREIGN KEY (`IDc`)
+    REFERENCES `assig3`.`client` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `IDp`
+    FOREIGN KEY (`IDp`)
+    REFERENCES `assig3`.`product` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 13
+DEFAULT CHARACTER SET = utf8;
+
+USE `assig3` ;
+
+-- -----------------------------------------------------
+-- procedure orderP
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `assig3`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `orderP`(IN IDc int,IN IDp int,IN quantityC int )
+BEGIN
+	
+  set @aux=(Select quantity from Product where ID = IDp);
+
+if (quantityC<@aux) then
+INSERT INTO OrderProduct (IDp, IDc, quantity)
+VALUES (IDp,IDc,quantityC);
+
+UPDATE Product
+set quantity = quantity - quantityC
+where ID = IDp;
+end if;
+
+    
+END$$
+
+DELIMITER ;
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
